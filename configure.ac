@@ -29,7 +29,7 @@ MM_ARG_ENABLE_DOCUMENTATION
 # http://www.gnu.org/software/libtool/manual/html_node/Updating-version-info.html
 AC_SUBST([LIBMURRAYC_TUPLE_UTILS_SO_VERSION], [0:0:0])
 
-PKG_CHECK_MODULES([PROJECT], [sdl2])
+PKG_CHECK_MODULES([PROJECT], [sdl2 glew])
 
 AC_LANG([C++])
 MM_ARG_ENABLE_WARNINGS([PROJECT_WXXFLAGS],
