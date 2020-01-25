@@ -13,12 +13,16 @@ dist_noinst_SCRIPTS = autogen.sh
 
 bin_PROGRAMS = example
 example_SOURCES = \
+	  src/buffer.h \
+	  src/buffer.cc \
 	  src/program.h \
 	  src/program.cc \
 	  src/shader.h \
 	  src/shader.cc \
 	  src/vertex.h \
 	  src/vertex.cc \
+	  src/vertex_array.h \
+	  src/vertex_array.cc \
 	  src/main.cc
 example_CXXFLAGS = $(PROJECT_WXXFLAGS)
 example_LDADD = $(PROJECT_LIBS)

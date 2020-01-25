@@ -1,6 +1,8 @@
+#include "buffer.h"
 #include "shader.h"
 #include "program.h"
 #include "vertex.h"
+#include "vertex_array.h"
 #include <vector>
 
 #include <iostream>
@@ -10,7 +12,6 @@
 #include <GL/glew.h>
 
 #include <unistd.h>
-
 
 int main() {
   if (SDL_Init(SDL_INIT_EVERYTHING) != 0) {
@@ -49,24 +50,25 @@ int main() {
   };
 
 
-  GLuint id_vertex_array = 0;
-  glGenVertexArrays(1, &id_vertex_array);
-  glBindVertexArray(id_vertex_array);
+  auto vertex_array = VertexArray();
+  auto buffer = Buffer();
+  {
+    glBindVertexArray(vertex_array.id());
 
-  GLuint id_buffer = 0;
-  glGenBuffers(1, &id_buffer);
+    glBindBuffer(GL_ARRAY_BUFFER, buffer.id());
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vec[0]) * vec.size(), &vec[0], GL_STATIC_DRAW);
 
-  glBindBuffer(GL_ARRAY_BUFFER, id_buffer);
-  glBufferData(GL_ARRAY_BUFFER, sizeof(vec[0]) * vec.size(), &vec[0], GL_STATIC_DRAW);
+    // Describe the arrangement of bytes in the Vertex:
+    // These same attribute ids are used later in the call to
+    // glBindAttribLocation().
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(vec[0]), reinterpret_cast<void*>(offsetof(Vertex, position_)));
 
-  // Describe the arrangement of bytes in the Vertex:
-  glEnableVertexAttribArray(0);
-  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
+    glEnableVertexAttribArray(1);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(vec[0]), reinterpret_cast<void*>(offsetof(Vertex, extra_)));
 
-  // glEnableVertexAttribArray(1);
-  // glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
-
-  glBindVertexArray(0);
+    glBindVertexArray(0);
+  }
 
 
   auto program = Program();
@@ -90,8 +92,8 @@ int main() {
   }
 
   // This is used in the shader.
-  glBindAttribLocation(program.id(), 0, "position");
-  glBindAttribLocation(program.id(), 1, "extra");
+  program.bindAttributeLocation(0, "position");
+  program.bindAttributeLocation(1, "extra");
 
   SDL_Event e;
   bool running = true;
@@ -104,17 +106,15 @@ int main() {
     glClearColor(0.5f, 0.8f, 0.9f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
 
-    glUseProgram(program.id());
+    program.use();
 
-    glBindVertexArray(id_vertex_array);
+    glBindVertexArray(vertex_array.id());
     glDrawArrays(GL_TRIANGLES, 0, vec.size());
     glBindVertexArray(0);
 
     SDL_GL_SwapWindow(win);
     SDL_Delay(1);
   }
-
-  glDeleteVertexArrays(1, &id_vertex_array);
 
   SDL_GL_DeleteContext(gl_context);
   SDL_DestroyWindow(win);

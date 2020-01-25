@@ -21,6 +21,7 @@ public:
   void attach(Shader  const & shader);
 
   bool link();
+  void bindAttributeLocation(GLuint index, std::string const & name);
   void use();
 
 private:

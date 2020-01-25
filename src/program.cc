@@ -62,3 +62,8 @@ Program::link() {
 
   return true;
 }
+
+void
+Program::bindAttributeLocation(GLuint index, std::string const & name) {
+  glBindAttribLocation(id_, index, name.c_str());
+}
