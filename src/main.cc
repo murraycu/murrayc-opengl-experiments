@@ -1,3 +1,8 @@
+#include "shader.h"
+#include "program.h"
+#include "vertex.h"
+#include <vector>
+
 #include <iostream>
 #include <cstdlib>
 
@@ -6,66 +11,6 @@
 
 #include <unistd.h>
 
-#include "vertex.h"
-#include <vector>
-#include <string>
-#include <fstream>
-#include <streambuf>
-
-static std::string
-load_from_file(std::string const & filepath) {
-  std::ifstream t(filepath);
-  return std::string(std::istreambuf_iterator<char>(t),
-                   std::istreambuf_iterator<char>());
-}
-
-static bool
-check_shader_error(GLuint shader, GLuint flag, bool isProgram) {
-  GLint success = 0;
-  GLchar error[1024] = { 0 };
-
-  if(isProgram)
-    glGetProgramiv(shader, flag, &success);
-  else
-    glGetShaderiv(shader, flag, &success);
-
-  if(success == GL_FALSE) {
-    if(isProgram)
-      glGetProgramInfoLog(shader, sizeof(error), nullptr, error);
-    else
-      glGetShaderInfoLog(shader, sizeof(error), nullptr, error);
-
-    std::cerr << error << std::endl;
-
-    return false;
-  }
-
-  return true;
-}
-
-static GLint
-load_and_compile_shader(GLint id_program, std::string const & filepath, GLenum shaderType) {
-  auto shader_contents = load_from_file(filepath);
-  if (shader_contents.empty()) {
-    std::cerr << "load_from_file() failed." << std::endl;
-    return -1;
-  }
-
-  auto const id_shader = glCreateShader(shaderType);
-  auto const pch = shader_contents.c_str();
-  auto const length = static_cast<GLint>(shader_contents.size());
-  glShaderSource(id_shader, 1, &pch, &length);
-  glCompileShader(id_shader);
-  if (!check_shader_error(id_shader, GL_COMPILE_STATUS, false)) {
-    std::cerr << "glCompileShader() failed." << std::endl;
-    return -1;
-  }
-
-  glAttachShader(id_program, id_shader);
-
-
-  return id_shader;
-}
 
 int main() {
   if (SDL_Init(SDL_INIT_EVERYTHING) != 0) {
@@ -124,33 +69,29 @@ int main() {
   glBindVertexArray(0);
 
 
-  auto const id_program = glCreateProgram();
-  auto const id_vertex_shader = load_and_compile_shader(id_program, "res/vertex_shader.vert", GL_VERTEX_SHADER);
-  if (id_vertex_shader == -1) {
-    std::cerr << "load_and_compile_shader() failed" << std::endl;
+  auto program = Program();
+  auto const vertex_shader = Shader("res/vertex_shader.vert", GL_VERTEX_SHADER);
+  if (!vertex_shader.id()) {
+    std::cerr << "Shader failed" << std::endl;
     return EXIT_FAILURE;
   }
+  program.attach(vertex_shader);
 
-  auto const id_fragment_shader = load_and_compile_shader(id_program, "res/fragment_shader.frag", GL_FRAGMENT_SHADER);
-  if (id_fragment_shader == -1) {
-    std::cerr << "load_and_compile_shader() failed" << std::endl;
+  auto const fragment_shader = Shader("res/fragment_shader.frag", GL_FRAGMENT_SHADER);
+  if (!fragment_shader.id()) {
+    std::cerr << "Shader failed" << std::endl;
+    return EXIT_FAILURE;
+  }
+  program.attach(fragment_shader);
+
+  if (!program.link()) {
+    std::cerr << "Program::link() failed" << std::endl;
     return EXIT_FAILURE;
   }
 
   // This is used in the shader.
-  glBindAttribLocation(id_program, 0, "position");
-
-  glLinkProgram(id_program);
-  if (!check_shader_error(id_program, GL_LINK_STATUS, true)) {
-    std::cerr << "glLinkProgram() failed." << std::endl;
-    return -1;
-  }
-
-  glValidateProgram(id_program);
-  if (!check_shader_error(id_program, GL_VALIDATE_STATUS, true)) {
-    std::cerr << "glValidateProgram() failed." << std::endl;
-    return -1;
-  }
+  glBindAttribLocation(program.id(), 0, "position");
+  glBindAttribLocation(program.id(), 1, "extra");
 
   SDL_Event e;
   bool running = true;
@@ -163,7 +104,7 @@ int main() {
     glClearColor(0.5f, 0.8f, 0.9f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
 
-    glUseProgram(id_program);
+    glUseProgram(program.id());
 
     glBindVertexArray(id_vertex_array);
     glDrawArrays(GL_TRIANGLES, 0, vec.size());
@@ -172,14 +113,6 @@ int main() {
     SDL_GL_SwapWindow(win);
     SDL_Delay(1);
   }
-
-  glDetachShader(id_program, id_fragment_shader);
-  glDeleteShader(id_fragment_shader);
-
-  glDetachShader(id_program, id_vertex_shader);
-  glDeleteShader(id_vertex_shader);
-
-  glDeleteProgram(id_program);
 
   glDeleteVertexArrays(1, &id_vertex_array);
 

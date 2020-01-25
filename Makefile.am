@@ -13,6 +13,10 @@ dist_noinst_SCRIPTS = autogen.sh
 
 bin_PROGRAMS = example
 example_SOURCES = \
+	  src/program.h \
+	  src/program.cc \
+	  src/shader.h \
+	  src/shader.cc \
 	  src/vertex.h \
 	  src/vertex.cc \
 	  src/main.cc
