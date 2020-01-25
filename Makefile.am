@@ -12,7 +12,10 @@ SUBDIRS = $(doc_subdirs)
 dist_noinst_SCRIPTS = autogen.sh
 
 bin_PROGRAMS = example
-example_SOURCES = src/main.cc
+example_SOURCES = \
+	  src/vertex.h \
+	  src/vertex.cc \
+	  src/main.cc
 example_CXXFLAGS = $(PROJECT_WXXFLAGS)
 example_LDADD = $(PROJECT_LIBS)
 
