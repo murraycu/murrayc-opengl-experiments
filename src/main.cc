@@ -84,19 +84,13 @@ int main() {
   auto const vertex_array2 = VertexArray{
     {
       {{-1.0, -0.0, 0}, {0.0, 0.0, 0.5}},
-      {{0, 0.2, 0}, {0.0, 0.5, 0.0}},
+      {{0, -0.2, 0}, {0.0, 0.5, 0.0}},
       {{0.0, -0.5, 0.0}, {-0.2, 0.0, 0.0}}
     }
   };
 
-  auto program1 = Program();
-  if (!setup_program(program1)) {
-    std::cerr << "setup_program() failed" << std::endl;
-    return EXIT_FAILURE;
-  }
-
-  auto program2 = Program();
-  if (!setup_program(program2)) {
+  auto program = Program();
+  if (!setup_program(program)) {
     std::cerr << "setup_program() failed" << std::endl;
     return EXIT_FAILURE;
   }
@@ -116,7 +110,6 @@ int main() {
     glClearColor(0.5f, 0.8f, 0.9f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
 
-
     {
       transform1.translation.x = sinf(counter);
       transform1.rotation.z = counter * 5;
@@ -125,16 +118,16 @@ int main() {
       transform1.scale = {cos_counter, cos_counter, cos_counter};
       counter += 0.01f;
 
-      program1.set_transform(transform1);
-      program1.use();
+      program.set_transform(transform1);
+      program.use();
       vertex_array1.draw_triangles();
     }
 
     {
       transform2.translation.x = cosf(counter);
 
-      program2.set_transform(transform2);
-      program2.use();
+      program.set_transform(transform2);
+      program.use();
       vertex_array2.draw_triangles();
     }
 
