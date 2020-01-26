@@ -19,6 +19,8 @@ example_SOURCES = \
 	  src/program.cc \
 	  src/shader.h \
 	  src/shader.cc \
+	  src/texture.h \
+	  src/texture.cc \
 	  src/transform.h \
 	  src/transform.cc \
 	  src/vertex.h \
@@ -26,8 +28,8 @@ example_SOURCES = \
 	  src/vertex_array.h \
 	  src/vertex_array.cc \
 	  src/main.cc
-example_CXXFLAGS = $(PROJECT_WXXFLAGS)
-example_LDADD = $(PROJECT_LIBS)
+example_CXXFLAGS = $(PROJECT_CFLAGS) $(STB_CFLAGS) $(PROJECT_WXXFLAGS)
+example_LDADD = $(PROJECT_LIBS) $(STB_LIBS)
 
 
 # Build googletest:

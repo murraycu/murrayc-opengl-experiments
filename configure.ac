@@ -31,6 +31,10 @@ AC_SUBST([LIBMURRAYC_TUPLE_UTILS_SO_VERSION], [0:0:0])
 
 PKG_CHECK_MODULES([PROJECT], [sdl2 glew])
 
+# We also need stb, but it doesn't install a pkg-config file.
+AC_SUBST([STB_CFLAGS], [])
+AC_SUBST([STB_LIBS], [-lstb])
+
 AC_LANG([C++])
 MM_ARG_ENABLE_WARNINGS([PROJECT_WXXFLAGS],
                        [-Wall],

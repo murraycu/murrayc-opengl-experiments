@@ -1,7 +1,7 @@
 #include "shader.h"
 #include "program.h"
-#include "vertex.h"
 #include "vertex_array.h"
+#include "texture.h"
 #include <vector>
 
 #include <iostream>
@@ -37,7 +37,7 @@ setup_program(Program& program) {
 
   // This is used in the shader.
   program.bindAttributeLocation(0, "position");
-  // program.bindAttributeLocation(1, "extra");
+  program.bindAttributeLocation(1, "texture_pos");
 
   return true;
 }
@@ -75,19 +75,21 @@ int main() {
 
   auto const vertex_array1 = VertexArray{
     {
-      {{-0.5, -0.5, 0}, {0.0, 0.0, 0.5}},
-      {{0, 0.5, 0}, {0.0, 0.5, 0.0}},
-      {{0.5, -0.5, 0.0}, {-0.2, 0.0, 0.0}}
+      {{-0.5, -0.5, 0}, {0.0, 0.0}},
+      {{0, 0.5, 0}, {0.0, 1.0}},
+      {{0.5, -0.5, 0.0}, {1.0, 0.0}}
     }
   };
 
   auto const vertex_array2 = VertexArray{
     {
-      {{-1.0, -0.0, 0}, {0.0, 0.0, 0.5}},
-      {{0, -0.2, 0}, {0.0, 0.5, 0.0}},
-      {{0.0, -0.5, 0.0}, {-0.2, 0.0, 0.0}}
+      {{-1.0, -0.0, 0}, {0.0, 0.0}},
+      {{0, -0.2, 0}, {0.0, 0.7}},
+      {{0.0, -0.5, 0.0}, {1.0, 0.0}}
     }
   };
+
+  Texture texture("res/texture1.jpg");
 
   auto program = Program();
   if (!setup_program(program)) {
@@ -120,6 +122,9 @@ int main() {
 
       program.set_transform(transform1);
       program.use();
+
+      glBindTexture(GL_TEXTURE_2D, texture.id());
+
       vertex_array1.draw_triangles();
     }
 
