@@ -23,6 +23,7 @@ public:
 
   enum AttributeID{
     POSITION = 0,
+    NORMAL,
     TEXTURE_POS,
   };
 

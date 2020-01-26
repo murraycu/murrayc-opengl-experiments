@@ -35,16 +35,22 @@ setup_program(Program& program) {
   }
   program.attach(fragment_shader);
 
+  // This is used in the shader.
+  // These are defined in VertexArray::bind_buffer().
+  // These must be specified before the program (and its shaders) is linked.
+  // Otherwise this will have no effect.
+  // Alternatively, we could use glGetAttribLocation() (after linking) with OpenGL 4.
+  program.bindAttributeLocation(VertexArray::AttributeID::POSITION,
+    "position");
+  program.bindAttributeLocation(VertexArray::AttributeID::NORMAL,
+    "normal");
+  program.bindAttributeLocation(VertexArray::AttributeID::TEXTURE_POS,
+    "texture_pos");
+
   if (!program.link()) {
     std::cerr << "Program::link() failed" << std::endl;
     return false;
   }
-
-  // This is used in the shader.
-  program.bindAttributeLocation(VertexArray::AttributeID::POSITION,
-    "position");
-  program.bindAttributeLocation(VertexArray::AttributeID::TEXTURE_POS,
-    "texture_pos");
 
   return true;
 }
@@ -81,7 +87,7 @@ int main() {
     std::cerr << "glewInit() failed: " << glewGetErrorString(res) << std::endl;;
     return EXIT_FAILURE;
   }
- 
+
   // See the use of GL_DEPTH_BUFFER_BIT with glClear in the drawing loop.
   glEnable(GL_DEPTH_TEST);
 
@@ -91,17 +97,17 @@ int main() {
 
   auto const vertex_array1 = VertexArray{
     {
-      {{-0.5, -0.5, 0}, {0.0, 0.0}},
-      {{0, 0.5, 0}, {0.0, 1.0}},
-      {{0.5, -0.5, 0.0}, {1.0, 0.0}}
+      {{-0.5, -0.5, 0}, {}, {0.0, 0.0}},
+      {{0, 0.5, 0}, {}, {0.0, 1.0}},
+      {{0.5, -0.5, 0.0}, {}, {1.0, 0.0}}
     }
   };
 
   auto const vertex_array2 = VertexArray{
     {
-      {{-1.0, -0.0, 0}, {0.0, 0.0}},
-      {{0, -0.2, 0}, {0.0, 0.7}},
-      {{0.0, -0.5, 0.0}, {1.0, 0.0}}
+      {{-1.0, -0.0, 0}, {}, {0.0, 0.0}},
+      {{0, -0.2, 0}, {}, {0.0, 0.7}},
+      {{0.0, -0.5, 0.0}, {}, {1.0, 0.0}}
     }
   };
 

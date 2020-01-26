@@ -4,6 +4,8 @@
 // See our call to glBindAttribLocation() which created this attribute name.
 attribute vec3 position;
 
+attribute vec3 normal;
+
 // The texture position of an individual vertex.
 // See our call to glBindAttribLocation() which created this attribute name.
 attribute vec2 texture_pos;

@@ -5,7 +5,6 @@ VertexArray:: VertexArray(Vertices const & vertices)
   bind_buffer();
 }
 
-
 VertexArray:: VertexArray(Vertices&& vertices)
 : vertices_(vertices) {
   bind_buffer();
@@ -28,6 +27,9 @@ void VertexArray::bind_buffer() {
   // glBindAttribLocation().
   glEnableVertexAttribArray(AttributeID::POSITION);
   glVertexAttribPointer(AttributeID::POSITION, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, position_)));
+
+  glEnableVertexAttribArray(AttributeID::NORMAL);
+  glVertexAttribPointer(AttributeID::NORMAL, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, normal_)));
 
   glEnableVertexAttribArray(AttributeID::TEXTURE_POS);
   glVertexAttribPointer(AttributeID::TEXTURE_POS, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, texture_pos_)));
