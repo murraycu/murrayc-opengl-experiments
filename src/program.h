@@ -1,9 +1,9 @@
 #ifndef MURRAYC_OPENGL_EXPERIMENTS_PROGRAM_H
 #define MURRAYC_OPENGL_EXPERIMENTS_PROGRAM_H
 
+#include "camera.h"
 #include "shader.h"
 #include "transform.h"
-#include <GL/glew.h>
 #include <vector>
 
 /**
@@ -34,7 +34,7 @@ public:
    * This assumes that the vertex shader has a line like this:
    * uniform mat4 transform
    */
-  void set_transform(Transform const & transform);
+  void set_transform_and_camera(Transform const & transform, Camera const & camera);
 
   void use();
 

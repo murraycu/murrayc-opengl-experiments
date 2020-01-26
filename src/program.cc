@@ -88,13 +88,13 @@ std::ostream& operator<<(std::ostream& stream, const glm::mat4 &matrix) {
 }
 */
 
-void Program::set_transform(Transform const & transform) {
+void Program::set_transform_and_camera(Transform const & transform, Camera const & camera) {
   if (id_transform_uniform_ == -1) {
     std::cerr << "id_transform_uniform_ is 0. Maybe link() has not been called, or has failed." << std::endl;
     return;
   }
 
-  auto const model = transform.model();
+  auto const model = camera.view_projection() * transform.model();
   // std::cout << "debug model: " << std::endl << model << std::endl;
   glUniformMatrix4fv(id_transform_uniform_, 1, GL_FALSE, &model[0][0]);
 }

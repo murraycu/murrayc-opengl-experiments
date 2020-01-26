@@ -1,5 +1,8 @@
 #include "transform.h"
 
+#define  GLM_ENABLE_EXPERIMENTAL
+#include <glm/gtx/transform.hpp>
+
 glm::mat4 Transform::model() const {
   // TODO: Cache this instead of recalculating if nothing has changed?
   auto const rot = glm::rotate(rotation.x, glm::vec3(1.0, 0.0, 0.0))

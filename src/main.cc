@@ -1,3 +1,4 @@
+#include "camera.h"
 #include "shader.h"
 #include "program.h"
 #include "vertex_array.h"
@@ -50,11 +51,13 @@ int main() {
     return EXIT_FAILURE;
   }
 
+ constexpr float WINDOW_WIDTH = 1000;
+ constexpr float WINDOW_HEIGHT = 1000;
 
   auto win = SDL_CreateWindow("Example",
                               SDL_WINDOWPOS_CENTERED,
                               SDL_WINDOWPOS_CENTERED,
-                              1000, 1000,
+                              WINDOW_WIDTH, WINDOW_HEIGHT,
                               SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE);
 
   auto gl_context = SDL_GL_CreateContext(win);
@@ -98,6 +101,8 @@ int main() {
     return EXIT_FAILURE;
   }
 
+  Camera camera(glm::vec3{0, 0, -3}, 70.0f, WINDOW_WIDTH / WINDOW_HEIGHT, 0.01f, 1000.0f);
+
   Transform transform1;
   Transform transform2;
   float counter = 0.0f;
@@ -106,8 +111,28 @@ int main() {
   bool running = true;
   while (running) {
     while (SDL_PollEvent(&e)) {
-      if(e.type == SDL_QUIT)
-        running = false;
+      switch (e.type) {
+        case SDL_QUIT:
+          running = false;
+          break;
+        case SDL_KEYDOWN: {
+          switch (e.key.keysym.sym) {
+            case SDLK_UP:
+              camera.move_forward();
+              break ;
+            case SDLK_DOWN:
+              camera.move_back();
+              break;
+            case SDLK_LEFT:
+              camera.move_left();
+              break ;
+            case SDLK_RIGHT:
+              camera.move_right();
+              break;
+          }
+          break;
+        }
+      }
     }
 
     glClearColor(0.5f, 0.8f, 0.9f, 1.0f);
@@ -115,13 +140,15 @@ int main() {
 
     {
       transform1.translation.x = sinf(counter);
+      transform1.translation.z = sinf(counter);
       transform1.rotation.z = counter * 5;
+      transform1.rotation.y = counter * 5;
 
-      auto const cos_counter = cosf(counter);
-      transform1.scale = {cos_counter, cos_counter, cos_counter};
+      // auto const cos_counter = cosf(counter);
+      // transform1.scale = {cos_counter, cos_counter, cos_counter};
       counter += 0.01f;
 
-      program.set_transform(transform1);
+      program.set_transform_and_camera(transform1, camera);
       program.use();
 
       glBindTexture(GL_TEXTURE_2D, texture1.id());
@@ -132,7 +159,7 @@ int main() {
     {
       transform2.translation.x = cosf(counter);
 
-      program.set_transform(transform2);
+      program.set_transform_and_camera(transform2, camera);
       program.use();
 
       glBindTexture(GL_TEXTURE_2D, texture2.id());

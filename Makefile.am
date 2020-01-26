@@ -2,7 +2,7 @@
 AUTOMAKE_OPTIONS = subdir-objects
 
 # Point to our macro directory and pick up user flags from the environment
-ACLOCAL_AMFLAGS  = -I macros ${ACLOCAL_FLAGS} 
+ACLOCAL_AMFLAGS  = -I macros ${ACLOCAL_FLAGS}
 # Make warnings always fatal at distcheck time, and disable execution
 # of tools that change files not installed by the package itself
 DISTCHECK_CONFIGURE_FLAGS = --enable-warnings=fatal --disable-update-mime-database
@@ -15,6 +15,8 @@ bin_PROGRAMS = example
 example_SOURCES = \
 	  src/buffer.h \
 	  src/buffer.cc \
+	  src/camera.h \
+	  src/camera.cc \
 	  src/program.h \
 	  src/program.cc \
 	  src/shader.h \
