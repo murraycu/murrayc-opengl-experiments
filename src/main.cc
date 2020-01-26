@@ -64,8 +64,12 @@ int main() {
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(vec[0]), reinterpret_cast<void*>(offsetof(Vertex, position_)));
 
-    glEnableVertexAttribArray(1);
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(vec[0]), reinterpret_cast<void*>(offsetof(Vertex, extra_)));
+    // This is how we would pass a second member variable to the vertex shader,
+    // along with a call to program.bindAttributeLocation(1, "extra") after the
+    // Program has been link()ed;
+    //
+    // glEnableVertexAttribArray(1);
+    // glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(vec[0]), reinterpret_cast<void*>(offsetof(Vertex, extra_)));
 
     glBindVertexArray(0);
   }
@@ -93,7 +97,7 @@ int main() {
 
   // This is used in the shader.
   program.bindAttributeLocation(0, "position");
-  program.bindAttributeLocation(1, "extra");
+  // program.bindAttributeLocation(1, "extra");
 
   SDL_Event e;
   bool running = true;
