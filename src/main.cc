@@ -12,6 +12,38 @@
 
 #include <unistd.h>
 
+namespace {
+
+bool
+setup_program(Program& program) {
+  auto const vertex_shader = Shader("res/vertex_shader.vert", GL_VERTEX_SHADER);
+  if (!vertex_shader.id()) {
+    std::cerr << "Shader failed" << std::endl;
+    return false;
+  }
+  program.attach(vertex_shader);
+
+  auto const fragment_shader = Shader("res/fragment_shader.frag", GL_FRAGMENT_SHADER);
+  if (!fragment_shader.id()) {
+    std::cerr << "Shader failed" << std::endl;
+    return false;
+  }
+  program.attach(fragment_shader);
+
+  if (!program.link()) {
+    std::cerr << "Program::link() failed" << std::endl;
+    return false;
+  }
+
+  // This is used in the shader.
+  program.bindAttributeLocation(0, "position");
+  // program.bindAttributeLocation(1, "extra");
+
+  return true;
+}
+
+} // anonymous namespace
+
 int main() {
   if (SDL_Init(SDL_INIT_EVERYTHING) != 0) {
     std::cerr << "SDL_Init() failed: " << SDL_GetError() << std::endl;;
@@ -41,7 +73,7 @@ int main() {
     return EXIT_FAILURE;
   }
 
-  auto const vertex_array = VertexArray{
+  auto const vertex_array1 = VertexArray{
     {
       {{-0.5, -0.5, 0}, {0.0, 0.0, 0.5}},
       {{0, 0.5, 0}, {0.0, 0.5, 0.0}},
@@ -49,32 +81,28 @@ int main() {
     }
   };
 
-  auto program = Program();
-  auto const vertex_shader = Shader("res/vertex_shader.vert", GL_VERTEX_SHADER);
-  if (!vertex_shader.id()) {
-    std::cerr << "Shader failed" << std::endl;
-    return EXIT_FAILURE;
-  }
-  program.attach(vertex_shader);
+  auto const vertex_array2 = VertexArray{
+    {
+      {{-1.0, -0.0, 0}, {0.0, 0.0, 0.5}},
+      {{0, 0.2, 0}, {0.0, 0.5, 0.0}},
+      {{0.0, -0.5, 0.0}, {-0.2, 0.0, 0.0}}
+    }
+  };
 
-  auto const fragment_shader = Shader("res/fragment_shader.frag", GL_FRAGMENT_SHADER);
-  if (!fragment_shader.id()) {
-    std::cerr << "Shader failed" << std::endl;
-    return EXIT_FAILURE;
-  }
-  program.attach(fragment_shader);
-
-  if (!program.link()) {
-    std::cerr << "Program::link() failed" << std::endl;
+  auto program1 = Program();
+  if (!setup_program(program1)) {
+    std::cerr << "setup_program() failed" << std::endl;
     return EXIT_FAILURE;
   }
 
-  // This is used in the shader.
-  program.bindAttributeLocation(0, "position");
-  // program.bindAttributeLocation(1, "extra");
+  auto program2 = Program();
+  if (!setup_program(program2)) {
+    std::cerr << "setup_program() failed" << std::endl;
+    return EXIT_FAILURE;
+  }
 
-
-  Transform transform;
+  Transform transform1;
+  Transform transform2;
   float counter = 0.0f;
 
   SDL_Event e;
@@ -88,17 +116,27 @@ int main() {
     glClearColor(0.5f, 0.8f, 0.9f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
 
-    transform.translation.x = sinf(counter);
-    transform.rotation.z = counter * 5;
 
-    auto const cos_counter = cosf(counter);
-    transform.scale = {cos_counter, cos_counter, cos_counter};
-    counter += 0.01f;
+    {
+      transform1.translation.x = sinf(counter);
+      transform1.rotation.z = counter * 5;
 
-    program.set_transform(transform);
-    program.use();
+      auto const cos_counter = cosf(counter);
+      transform1.scale = {cos_counter, cos_counter, cos_counter};
+      counter += 0.01f;
 
-    vertex_array.draw_triangles();
+      program1.set_transform(transform1);
+      program1.use();
+      vertex_array1.draw_triangles();
+    }
+
+    {
+      transform2.translation.x = cosf(counter);
+
+      program2.set_transform(transform2);
+      program2.use();
+      vertex_array2.draw_triangles();
+    }
 
     SDL_GL_SwapWindow(win);
     SDL_Delay(1);
