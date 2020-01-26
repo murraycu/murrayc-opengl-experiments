@@ -19,6 +19,8 @@ example_SOURCES = \
 	  src/program.cc \
 	  src/shader.h \
 	  src/shader.cc \
+	  src/transform.h \
+	  src/transform.cc \
 	  src/vertex.h \
 	  src/vertex.cc \
 	  src/vertex_array.h \

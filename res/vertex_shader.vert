@@ -10,5 +10,6 @@ uniform mat4 transform;
 
 void main() {
   // Use the vec3 position that's in the position attribute.
-  gl_Position = vec4(position, 1.0);
+  // and the transform matrix that's in the transform uniform.
+  gl_Position = transform * vec4(position, 1.0);
 }

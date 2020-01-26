@@ -99,6 +99,10 @@ int main() {
   program.bindAttributeLocation(0, "position");
   // program.bindAttributeLocation(1, "extra");
 
+
+  Transform transform;
+  float counter = 0.0f;
+
   SDL_Event e;
   bool running = true;
   while (running) {
@@ -110,6 +114,14 @@ int main() {
     glClearColor(0.5f, 0.8f, 0.9f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
 
+    transform.translation.x = sinf(counter);
+    transform.rotation.z = counter * 5;
+
+    auto const cos_counter = cosf(counter);
+    transform.scale = {cos_counter, cos_counter, cos_counter};
+    counter += 0.01f;
+
+    program.set_transform(transform);
     program.use();
 
     glBindVertexArray(vertex_array.id());

@@ -2,14 +2,16 @@
 #define MURRAYC_OPENGL_EXPERIMENTS_PROGRAM_H
 
 #include "shader.h"
+#include "transform.h"
 #include <GL/glew.h>
 #include <vector>
-
 
 /**
  * Wraps an OpenGL Program.
  * First attach() Shaders, then link() and bindAttributeLocation().
  * Then use().
+ *
+ * Use set_tranform() to specify a transformation to be used by the shaders.
  */
 class Program {
 public:
@@ -27,6 +29,13 @@ public:
 
   bool link();
   void bindAttributeLocation(GLuint index, std::string const & name);
+
+  /** Set a Transform to be used by the Shaders.
+   * This assumes that the vertex shader has a line like this:
+   * uniform mat4 transform
+   */
+  void set_transform(Transform const & transform);
+
   void use();
 
 private:
@@ -34,6 +43,7 @@ private:
   ID id_{};
   std::vector<Shader::ID> attached_shaders_;
 
+  GLint id_transform_uniform_{-1};
 };
 
 #endif // MURRAYC_OPENGL_EXPERIMENTS_PROGRAM_H

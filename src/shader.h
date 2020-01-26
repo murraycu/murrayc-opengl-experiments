@@ -24,10 +24,12 @@ public:
     return id_;
   }
 
+
   ~Shader();
 
 private:
   ID id_{};
+  GLuint transform_uniform_;
 };
 
 #endif // MURRAYC_OPENGL_EXPERIMENTS_SHADER_H

@@ -60,10 +60,41 @@ Program::link() {
     return false;
   }
 
+  id_transform_uniform_ = glGetUniformLocation(id_, "transform");
+  if (id_transform_uniform_ == -1) {
+    std::cerr << "glGetUniformLocation() failed." << std::endl;
+    return false;
+  }
+
   return true;
 }
 
 void
 Program::bindAttributeLocation(GLuint index, std::string const & name) {
   glBindAttribLocation(id_, index, name.c_str());
+}
+
+/*
+std::ostream& operator<<(std::ostream& stream, const glm::mat4 &matrix) {
+
+  for (int i = 0; i < 4; i++) {
+    for (int j = 0; j < 4; j++) {
+      stream << matrix[i][j] << " ";
+    }
+    stream << std::endl;
+  }
+
+  return stream;
+}
+*/
+
+void Program::set_transform(Transform const & transform) {
+  if (id_transform_uniform_ == -1) {
+    std::cerr << "id_transform_uniform_ is 0. Maybe link() has not been called, or has failed." << std::endl;
+    return;
+  }
+
+  auto const model = transform.model();
+  // std::cout << "debug model: " << std::endl << model << std::endl;
+  glUniformMatrix4fv(id_transform_uniform_, 1, GL_FALSE, &model[0][0]);
 }
