@@ -5,7 +5,7 @@
 #include "vertex.h"
 #include <GL/glew.h>
 #include <vector>
-
+#include <string>
 
 class VertexArray {
 public:
@@ -25,6 +25,8 @@ public:
    * actual vertex in the mesh.
    */
   VertexArray(Vertices&& vertices, Indices&& indices);
+
+  explicit VertexArray(std::string const & filepath);
 
   ~VertexArray();
 
@@ -51,8 +53,8 @@ private:
   AttributeID id_attribute_texture_pos_;
   Buffer buffer_vertices_;
   Buffer buffer_indices_;
-  Vertices const vertices_;
-  Indices const indices_;
+  Vertices vertices_;
+  Indices indices_;
 };
 
 #endif // MURRAYC_OPENGL_EXPERIMENTS_VERTEX_ARRAY_H

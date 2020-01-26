@@ -95,7 +95,9 @@ int main() {
   glEnable(GL_CULL_FACE);
   glCullFace(GL_BACK);
 
-  auto const vertex_array1 = VertexArray{
+  auto const vertex_array1 = VertexArray("res/teapot.obj");
+
+  auto const vertex_array2 = VertexArray{
     {
       {{-0.5, -0.5, 0}, {}, {0.0, 0.0}},
       {{0, 0.5, 0}, {}, {0.0, 1.0}},
@@ -106,19 +108,8 @@ int main() {
     }
   };
 
-  auto const vertex_array2 = VertexArray{
-    {
-      {{-1.0, -0.0, 0}, {}, {0.0, 0.0}},
-      {{0, -0.2, 0}, {}, {0.0, 0.7}},
-      {{0.0, -0.5, 0.0}, {}, {1.0, 0.0}}
-    },
-    {
-      0, 1, 2
-    }
-  };
-
-  Texture texture1("res/texture1.jpg");
-  Texture texture2("res/texture2.jpg");
+  Texture texture1("res/texture2.jpg");
+  Texture texture2("res/texture1.jpg");
 
   auto program = Program();
   if (!setup_program(program)) {
@@ -164,10 +155,13 @@ int main() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     {
+      transform1.scale.x = 0.01;
+      transform1.scale.y = 0.01;
+      transform1.scale.z = 0.01;
       transform1.translation.x = sinf(counter);
       transform1.translation.z = sinf(counter);
-      transform1.rotation.z = counter * 5;
-      transform1.rotation.y = counter * 5;
+      transform1.rotation.z = counter * 2;
+      transform1.rotation.y = counter * 2;
 
       // auto const cos_counter = cosf(counter);
       // transform1.scale = {cos_counter, cos_counter, cos_counter};

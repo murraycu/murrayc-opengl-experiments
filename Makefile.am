@@ -27,7 +27,8 @@ example_SOURCES = \
 	  src/vertex.cc \
 	  src/vertex_array.h \
 	  src/vertex_array.cc \
-	  src/main.cc
+	  src/main.cc \
+	  tinyobjloader/tin_obj_loader
 example_CXXFLAGS = $(PROJECT_CFLAGS) $(STB_CFLAGS) $(PROJECT_WXXFLAGS)
 example_LDADD = $(PROJECT_LIBS) $(STB_LIBS)
 

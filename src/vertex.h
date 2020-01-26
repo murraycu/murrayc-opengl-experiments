@@ -5,6 +5,8 @@
 
 class Vertex {
 public:
+  Vertex() = default;
+
   Vertex(glm::vec3&& position, glm::vec3&& normal, glm::vec2&& texture_pos)
   : position_(position),
     normal_(normal),
@@ -17,7 +19,6 @@ public:
     texture_pos_(texture_pos) {
   }
 
-  Vertex() = default;
 
   glm::vec3 position_{};
   glm::vec3 normal_{};

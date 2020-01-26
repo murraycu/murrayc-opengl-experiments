@@ -18,6 +18,7 @@ $ sudo apt install libglew-dev libsdl2-dev libstb-dev
 
 Like so:
 
+$ git submodule init
 $ ./autogen
 $ make
 
