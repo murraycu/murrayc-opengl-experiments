@@ -75,6 +75,13 @@ int main() {
     std::cerr << "glewInit() failed: " << glewGetErrorString(res) << std::endl;;
     return EXIT_FAILURE;
   }
+ 
+  // See the use of GL_DEPTH_BUFFER_BIT with glClear in the drawing loop.
+  glEnable(GL_DEPTH_TEST);
+
+  // Make drawing more "correct".
+  glEnable(GL_CULL_FACE);
+  glCullFace(GL_BACK);
 
   auto const vertex_array1 = VertexArray{
     {
@@ -136,7 +143,7 @@ int main() {
     }
 
     glClearColor(0.5f, 0.8f, 0.9f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     {
       transform1.translation.x = sinf(counter);
