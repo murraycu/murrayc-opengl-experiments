@@ -1,4 +1,3 @@
-#include "buffer.h"
 #include "shader.h"
 #include "program.h"
 #include "vertex.h"
@@ -42,38 +41,13 @@ int main() {
     return EXIT_FAILURE;
   }
 
-  using Vertices = std::vector<Vertex>;
-  Vertices vec = {
-    {{-0.5, -0.5, 0}, {}},
-    {{0, 0.5, 0}, {}},
-    {{0.5, -0.5, 0.0}, {}}
+  auto const vertex_array = VertexArray{
+    {
+      {{-0.5, -0.5, 0}, {0.0, 0.0, 0.5}},
+      {{0, 0.5, 0}, {0.0, 0.5, 0.0}},
+      {{0.5, -0.5, 0.0}, {-0.2, 0.0, 0.0}}
+    }
   };
-
-
-  auto vertex_array = VertexArray();
-  auto buffer = Buffer();
-  {
-    glBindVertexArray(vertex_array.id());
-
-    glBindBuffer(GL_ARRAY_BUFFER, buffer.id());
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vec[0]) * vec.size(), &vec[0], GL_STATIC_DRAW);
-
-    // Describe the arrangement of bytes in the Vertex:
-    // These same attribute ids are used later in the call to
-    // glBindAttribLocation().
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(vec[0]), reinterpret_cast<void*>(offsetof(Vertex, position_)));
-
-    // This is how we would pass a second member variable to the vertex shader,
-    // along with a call to program.bindAttributeLocation(1, "extra") after the
-    // Program has been link()ed;
-    //
-    // glEnableVertexAttribArray(1);
-    // glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(vec[0]), reinterpret_cast<void*>(offsetof(Vertex, extra_)));
-
-    glBindVertexArray(0);
-  }
-
 
   auto program = Program();
   auto const vertex_shader = Shader("res/vertex_shader.vert", GL_VERTEX_SHADER);
@@ -124,9 +98,7 @@ int main() {
     program.set_transform(transform);
     program.use();
 
-    glBindVertexArray(vertex_array.id());
-    glDrawArrays(GL_TRIANGLES, 0, vec.size());
-    glBindVertexArray(0);
+    vertex_array.draw_triangles();
 
     SDL_GL_SwapWindow(win);
     SDL_Delay(1);
