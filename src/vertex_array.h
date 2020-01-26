@@ -10,9 +10,22 @@
 class VertexArray {
 public:
   using Vertices = std::vector<Vertex>;
+  using Indices = std::vector<GLuint>;
 
-  explicit VertexArray(Vertices const & vertices);
-  explicit VertexArray(Vertices&& vertices);
+  /**
+   * @param vertices One entry for each vertex.
+   * @param indices One index, referring to a position in @a vertices, for each
+   * actual vertex in the mesh.
+   */
+  VertexArray(Vertices const & vertices, Indices const & indices);
+
+  /**
+   * @param vertices One entry for each vertex.
+   * @param indices One index, referring to a position in @a vertices, for each
+   * actual vertex in the mesh.
+   */
+  VertexArray(Vertices&& vertices, Indices&& indices);
+
   ~VertexArray();
 
   using ID = GLuint;
@@ -25,6 +38,7 @@ public:
     POSITION = 0,
     NORMAL,
     TEXTURE_POS,
+    INDEX
   };
 
   void draw_triangles() const;
@@ -33,8 +47,12 @@ private:
   void bind_buffer();
 
   ID id_{};
-  Buffer buffer_;
+  AttributeID id_attribute_position_;
+  AttributeID id_attribute_texture_pos_;
+  Buffer buffer_vertices_;
+  Buffer buffer_indices_;
   Vertices const vertices_;
+  Indices const indices_;
 };
 
 #endif // MURRAYC_OPENGL_EXPERIMENTS_VERTEX_ARRAY_H
