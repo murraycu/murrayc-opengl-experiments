@@ -89,7 +89,8 @@ int main() {
     }
   };
 
-  Texture texture("res/texture1.jpg");
+  Texture texture1("res/texture1.jpg");
+  Texture texture2("res/texture2.jpg");
 
   auto program = Program();
   if (!setup_program(program)) {
@@ -123,7 +124,7 @@ int main() {
       program.set_transform(transform1);
       program.use();
 
-      glBindTexture(GL_TEXTURE_2D, texture.id());
+      glBindTexture(GL_TEXTURE_2D, texture1.id());
 
       vertex_array1.draw_triangles();
     }
@@ -133,6 +134,9 @@ int main() {
 
       program.set_transform(transform2);
       program.use();
+
+      glBindTexture(GL_TEXTURE_2D, texture2.id());
+
       vertex_array2.draw_triangles();
     }
 
