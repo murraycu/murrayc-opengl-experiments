@@ -6,6 +6,11 @@
 #include <vector>
 
 
+/**
+ * Wraps an OpenGL Program.
+ * First attach() Shaders, then link() and bindAttributeLocation().
+ * Then use().
+ */
 class Program {
 public:
   Program();
@@ -18,7 +23,7 @@ public:
 
   ~Program();
 
-  void attach(Shader  const & shader);
+  void attach(Shader const & shader);
 
   bool link();
   void bindAttributeLocation(GLuint index, std::string const & name);

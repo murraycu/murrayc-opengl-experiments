@@ -6,6 +6,9 @@
 #include <vector>
 
 
+/**
+ * Wraps an OpenGL Buffer.
+ */
 class Buffer {
 public:
   Buffer();
