@@ -15,6 +15,10 @@
 
 namespace {
 
+/**
+ * Attach the shaders to the program,
+ * and bind the attributes provided by VertexArray.
+ */
 bool
 setup_program(Program& program) {
   auto const vertex_shader = Shader("res/vertex_shader.vert", GL_VERTEX_SHADER);
@@ -37,8 +41,10 @@ setup_program(Program& program) {
   }
 
   // This is used in the shader.
-  program.bindAttributeLocation(0, "position");
-  program.bindAttributeLocation(1, "texture_pos");
+  program.bindAttributeLocation(VertexArray::AttributeID::POSITION,
+    "position");
+  program.bindAttributeLocation(VertexArray::AttributeID::TEXTURE_POS,
+    "texture_pos");
 
   return true;
 }

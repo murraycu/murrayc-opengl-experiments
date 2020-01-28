@@ -13,6 +13,7 @@ public:
 
   explicit VertexArray(Vertices const & vertices);
   explicit VertexArray(Vertices&& vertices);
+  ~VertexArray();
 
   using ID = GLuint;
 
@@ -20,7 +21,10 @@ public:
     return id_;
   }
 
-  ~VertexArray();
+  enum AttributeID{
+    POSITION = 0,
+    TEXTURE_POS,
+  };
 
   void draw_triangles() const;
 
