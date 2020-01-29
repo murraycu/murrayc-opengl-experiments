@@ -5,9 +5,7 @@ AUTOMAKE_OPTIONS = subdir-objects
 ACLOCAL_AMFLAGS  = -I macros ${ACLOCAL_FLAGS}
 # Make warnings always fatal at distcheck time, and disable execution
 # of tools that change files not installed by the package itself
-DISTCHECK_CONFIGURE_FLAGS = --enable-warnings=fatal --disable-update-mime-database
-
-SUBDIRS = $(doc_subdirs)
+DISTCHECK_CONFIGURE_FLAGS = --enable-warnings=fatal
 
 dist_noinst_SCRIPTS = autogen.sh
 
@@ -87,25 +85,27 @@ EXTRA_DIST = $(gtest_top_srcdir)/src/gtest-all.cc \
 	     $(gtest_top_srcdir)/include/gtest/internal/custom/gtest-printers.h \
 	     $(gtest_top_srcdir)/include/gtest/internal/custom/gtest-port.h
 
-COMMON_CXXFLAGS = $(PROJECT_CFLAGS) $(PROJECT_WXXFLAGS) $(BOOST_CPPFLAGS)
-COMMON_CPPFLAGS = -I$(top_builddir) -I$(top_srcdir) \
+COMMON_CXXFLAGS = $(PROJECT_CFLAGS) $(PROJECT_WXXFLAGS)
+COMMON_CPPFLAGS = -I$(top_builddir)/src -I$(top_srcdir)/src \
 		  -isystem $(gtest_top_srcdir)/include
 COMMON_LIBS = $(PROJECT_LIBS) libgtest.la
 
 check_PROGRAMS = \
-  tests/test_example
+  tests/test_vertex
 
 TESTS = $(check_PROGRAMS)
 
 #List of source files needed to build the executable:
 
-tests_test_example_SOURCES = \
-	tests/test_example.cc
-tests_test_example_CPPFLAGS = \
+tests_test_vertex_SOURCES = \
+	tests/test_vertex.cc \
+	src/vertex.h \
+	src/vertex.cc
+tests_test_vertex_CPPFLAGS = \
 	$(COMMON_CPPFLAGS)
-tests_test_example_CXXFLAGS = \
+tests_test_vertex_CXXFLAGS = \
 	$(COMMON_CXXFLAGS)
-tests_test_example_LIBS = \
+tests_test_vertex_LDADD = \
 	$(COMMON_LIBS)
 
 
