@@ -1,16 +1,16 @@
-#version 130
+#version 450 core
 
 // The position of an individual vertex.
 // See our call to glBindAttribLocation() which created this attribute name.
-attribute vec3 position;
+in vec3 position;
 
-attribute vec3 normal;
+in vec3 normal;
 
 // The texture position of an individual vertex.
 // See our call to glBindAttribLocation() which created this attribute name.
-attribute vec2 texture_pos;
+in vec2 texture_pos;
 
-varying vec2 texture_pos0;
+out vec2 texture_pos0;
 
 // A transformation to apply to all vertices.
 // See our call to

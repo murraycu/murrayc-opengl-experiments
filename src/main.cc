@@ -63,8 +63,13 @@ int main() {
     return EXIT_FAILURE;
   }
 
- constexpr float WINDOW_WIDTH = 1000;
- constexpr float WINDOW_HEIGHT = 1000;
+  // Allow use of OpenGL 4.5 (Core) in the shader programs.
+  SDL_GL_SetAttribute (SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE); //OpenGL core profile
+  SDL_GL_SetAttribute (SDL_GL_CONTEXT_MAJOR_VERSION, 4);
+  SDL_GL_SetAttribute (SDL_GL_CONTEXT_MINOR_VERSION, 5);
+
+  constexpr float WINDOW_WIDTH = 1000;
+  constexpr float WINDOW_HEIGHT = 1000;
 
   auto win = SDL_CreateWindow("Example",
                               SDL_WINDOWPOS_CENTERED,
