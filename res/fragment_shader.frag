@@ -1,8 +1,8 @@
 #version 450 core
 
-// This is set in our fragment shader,
+// This is set in our vertex shader,
 // though we actually get an interpolated (for a pixel) value
-// based on the fragment shader's per-vertex values.
+// based on the vertex shader's per-vertex values.
 in vec2 texture_pos0;
 
 // (With OpenGL < 3 we would just use gl_FragColor instead.)
