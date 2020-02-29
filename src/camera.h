@@ -5,6 +5,7 @@
 
 class Camera {
 public:
+  Camera() = default;
   Camera(const glm::vec3& pos, float fov, float aspect, float znear, float zfar);
 
   glm::mat4 view_projection() const;

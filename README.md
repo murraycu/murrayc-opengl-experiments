@@ -9,10 +9,10 @@ https://www.youtube.com/playlist?list=PLEETnX-uPtBXT9T-hD0Bj31DSnwio-ywh
 
 ## Dependencies
 
-This requires a few OpenGl libraries, and the SDL2 and stb libraries.
+This requires a few OpenGl libraries, and the glfw3 and stb libraries.
 For instance, on Ubuntu or Debian:
 
-$ sudo apt install libglew-dev libsdl2-dev libstb-dev
+$ sudo apt install libglew-dev libglfw3-dev libstb-dev
 
 ## Build
 

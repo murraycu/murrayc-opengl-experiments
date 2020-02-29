@@ -8,10 +8,12 @@
 #include <iostream>
 #include <cstdlib>
 
-#include <SDL2/SDL.h>
 #include <GL/glew.h>
+#include <GLFW/glfw3.h>
 
 #include <unistd.h>
+
+Camera camera;
 
 namespace {
 
@@ -55,36 +57,63 @@ setup_program(Program& program) {
   return true;
 }
 
+
+void on_glfw_key(GLFWwindow* /* window */, int key, int /* scancode */, int action, int /* mods */)
+{
+    if (action != GLFW_PRESS && action != GLFW_REPEAT) {
+      return;
+    }
+
+    switch (key) {
+      case GLFW_KEY_UP:
+        camera.move_forward();
+        break ;
+      case GLFW_KEY_DOWN:
+        camera.move_back();
+        break;
+      case GLFW_KEY_LEFT:
+        camera.move_left();
+        break ;
+      case GLFW_KEY_RIGHT:
+        camera.move_right();
+        break;
+    }
+}
+
 } // anonymous namespace
 
+
 int main() {
-  if (SDL_Init(SDL_INIT_EVERYTHING) != 0) {
-    std::cerr << "SDL_Init() failed: " << SDL_GetError() << std::endl;;
+  if (glfwInit() != GLFW_TRUE) {
+    std::cerr << "glfwInit() failed: " << glfwGetError(nullptr) << std::endl;;
     return EXIT_FAILURE;
   }
 
   // Allow use of OpenGL 4.5 (Core) in the shader programs.
-  SDL_GL_SetAttribute (SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE); //OpenGL core profile
-  SDL_GL_SetAttribute (SDL_GL_CONTEXT_MAJOR_VERSION, 4);
-  SDL_GL_SetAttribute (SDL_GL_CONTEXT_MINOR_VERSION, 5);
+  glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE); //OpenGL core profile
+  glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+  glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 5);
 
   constexpr float WINDOW_WIDTH = 1000;
   constexpr float WINDOW_HEIGHT = 1000;
 
-  auto win = SDL_CreateWindow("Example",
-                              SDL_WINDOWPOS_CENTERED,
-                              SDL_WINDOWPOS_CENTERED,
-                              WINDOW_WIDTH, WINDOW_HEIGHT,
-                              SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE);
+  glfwWindowHint(GLFW_GREEN_BITS, 8);
+  glfwWindowHint(GLFW_BLUE_BITS, 8);
+  glfwWindowHint(GLFW_ALPHA_BITS, 8);
+  // TODO: glfw equivalent for this: SDL_GL_SetAttribute(SDL_GL_BUFFER_SIZE, 32);
+  glfwWindowHint(GLFW_DEPTH_BITS, 16);
+  glfwWindowHint(GLFW_DOUBLEBUFFER, GLFW_TRUE);
+  auto win = glfwCreateWindow(WINDOW_WIDTH,
+                              WINDOW_HEIGHT,
+                              "Example",
+                              nullptr, nullptr);
+  if (!win) {
+    std::cerr << "glfwCreateWindow() failed: " << glfwGetError(nullptr) << std::endl;;
+    return EXIT_FAILURE;
+  }
+  glfwMakeContextCurrent(win);
 
-  auto gl_context = SDL_GL_CreateContext(win);
 
-  SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 8);
-  SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, 8);
-  SDL_GL_SetAttribute(SDL_GL_ALPHA_SIZE, 8);
-  SDL_GL_SetAttribute(SDL_GL_BUFFER_SIZE, 32);
-  SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 16);
-  SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 
   // glewExperimental = GL_TRUE;
   auto const res = glewInit();
@@ -122,40 +151,15 @@ int main() {
     return EXIT_FAILURE;
   }
 
-  Camera camera(glm::vec3{0, 0, -3}, 70.0f, WINDOW_WIDTH / WINDOW_HEIGHT, 0.01f, 1000.0f);
+  camera = Camera(glm::vec3{0, 0, -3}, 70.0f, WINDOW_WIDTH / WINDOW_HEIGHT, 0.01f, 1000.0f);
 
   Transform transform1;
   Transform transform2;
   float counter = 0.0f;
 
-  SDL_Event e;
-  bool running = true;
-  while (running) {
-    while (SDL_PollEvent(&e)) {
-      switch (e.type) {
-        case SDL_QUIT:
-          running = false;
-          break;
-        case SDL_KEYDOWN: {
-          switch (e.key.keysym.sym) {
-            case SDLK_UP:
-              camera.move_forward();
-              break ;
-            case SDLK_DOWN:
-              camera.move_back();
-              break;
-            case SDLK_LEFT:
-              camera.move_left();
-              break ;
-            case SDLK_RIGHT:
-              camera.move_right();
-              break;
-          }
-          break;
-        }
-      }
-    }
+  glfwSetKeyCallback(win, &on_glfw_key);
 
+  while (!glfwWindowShouldClose(win)) {
     glClearColor(0.5f, 0.8f, 0.9f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -191,13 +195,12 @@ int main() {
       vertex_array2.draw_triangles();
     }
 
-    SDL_GL_SwapWindow(win);
-    SDL_Delay(1);
+    glfwSwapBuffers(win);
+    glfwPollEvents();
   }
 
-  SDL_GL_DeleteContext(gl_context);
-  SDL_DestroyWindow(win);
-  SDL_Quit();
+  glfwDestroyWindow(win);
+  glfwTerminate();
 
   return EXIT_SUCCESS;
 }
