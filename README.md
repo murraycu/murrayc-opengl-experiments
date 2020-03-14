@@ -19,13 +19,13 @@ $ sudo apt install libglew-dev libglfw3-dev libstb-dev
 Like so:
 
 $ git submodule init
-$ ./autogen
+$ git submodule update
+$ ./autogen.sh
 $ make
 
-Or:
+./autogen.sh can take extra arguments, such as:
 
 $ ./autogen.sh --prefix=/opt/somewhere --enable-warnings=fatal
-$ make
 
 
 
